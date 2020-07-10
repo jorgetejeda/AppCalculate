@@ -31,42 +31,65 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void buttonPress(String buttonText) {
     if (buttonText == 'Clear') {
-      setState(() {
-        _output = "0";
-        num1 = 0.0;
-        num2 = 0.0;
-        operand = "";
-      });
+      clearOperation();
     } else if (buttonText == 'x' ||
         buttonText == '/' ||
         buttonText == '+' ||
         buttonText == '-') {
-      num1 = double.parse(output);
-      operand = buttonText;
-      _output = '0';
+      getOperation(buttonText);
     } else if (buttonText == ".") {
-      if (_output.contains(".")) {
-        print('Ya has agregado un decimal');
-        return;
-      } else {
-        _output = _output + buttonText;
-      }
+      addingDecimal(buttonText);
     } else if (buttonText == "=") {
-      num2 = double.parse(output);
-      if (operand == "+") _output = (num1 + num2).toString();
-      if (operand == "-") _output = (num1 - num2).toString();
-      if (operand == "x") _output = (num1 * num2).toString();
-      if (operand == "/") _output = (num1 / num2).toString();
+      result();
+    } else {
+      addingNumber(buttonText);
+    }
+  }
 
+  void clearOperation() {
+    setState(() {
+      output = "0";
+      _output = "";
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
+    });
+  }
+
+  void getOperation(String buttonText) {
+    num1 = double.parse(output);
+    operand = buttonText;
+    print(num1.toString() + operand);
+    _output = '0';
+  }
+
+  void addingDecimal(String buttonText) {
+    if (_output.contains(".")) {
+      print('Ya has agregado un decimal');
+      return;
     } else {
       _output = _output + buttonText;
-      setState(() {
-        output = double.parse(_output).toStringAsFixed(2);
-      });
     }
+  }
+
+  void addingNumber(String buttonText) {
+    _output = _output + buttonText;
+    setState(() {
+      output = double.parse(_output).toStringAsFixed(2);
+    });
+    print('valor ' + output);
+  }
+
+  void result() {
+    num2 = double.parse(output);
+    if (operand == "+") _output = (num1 + num2).toString();
+    if (operand == "-") _output = (num1 - num2).toString();
+    if (operand == "x") _output = (num1 * num2).toString();
+    if (operand == "/") _output = (num1 / num2).toString();
+
+    num1 = 0.0;
+    num2 = 0.0;
+    operand = "";
   }
 
   Widget buildButton(String text) {
@@ -98,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
           ),
         ),
-        // Expanded(child: Divider()),
         Column(
           children: <Widget>[
             Row(
@@ -144,24 +166,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ]),
     );
   }
-
-  // bool isOperator(String x) {
-  //   if (x == '%' || x == '/' || x == 'x' || x == '-' || x == '+' || x == '=')
-  //     return true;
-  //   return false;
-  // }
-
-  // Widget showButton(String buttonText, Color color, Color textColor,
-  //     {bool unique = false}) {
-  //   return Buttons(
-  //     buttonText: buttonText,
-  //     color: unique
-  //         ? color
-  //         : isOperator(buttonText) ? color : Colors.deepOrange[50],
-  //     textColor: unique
-  //         ? textColor
-  //         : isOperator(buttonText) ? Colors.white : textColor,
-  //   );
-  // }
-
 }
