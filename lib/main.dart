@@ -1,4 +1,3 @@
-import 'package:calculadora/buttons.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -24,63 +23,145 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> buttons = ['C','+/-','%','/','9','8','7','x','6','5','4','-','3','2','1','+','0','',',','='];
+  String output = "0";
+  String _output = "0";
+  double num1 = 0.0;
+  double num2 = 0.0;
+  String operand = "";
+
+  void buttonPress(String buttonText) {
+    if (buttonText == 'Clear') {
+      setState(() {
+        _output = "0";
+        num1 = 0.0;
+        num2 = 0.0;
+        operand = "";
+      });
+    } else if (buttonText == 'x' ||
+        buttonText == '/' ||
+        buttonText == '+' ||
+        buttonText == '-') {
+      num1 = double.parse(output);
+      operand = buttonText;
+      _output = '0';
+    } else if (buttonText == ".") {
+      if (_output.contains(".")) {
+        print('Ya has agregado un decimal');
+        return;
+      } else {
+        _output = _output + buttonText;
+      }
+    } else if (buttonText == "=") {
+      num2 = double.parse(output);
+      if (operand == "+") _output = (num1 + num2).toString();
+      if (operand == "-") _output = (num1 - num2).toString();
+      if (operand == "x") _output = (num1 * num2).toString();
+      if (operand == "/") _output = (num1 / num2).toString();
+
+      num1 = 0.0;
+      num2 = 0.0;
+      operand = "";
+    } else {
+      _output = _output + buttonText;
+      setState(() {
+        output = double.parse(_output).toStringAsFixed(2);
+      });
+    }
+  }
+
+  Widget buildButton(String text) {
+    return Expanded(
+        child: MaterialButton(
+      padding: EdgeInsets.all(20),
+      onPressed: () => buttonPress(text),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      color: Colors.deepOrange,
+      textColor: Colors.white,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text('2345678', style:TextStyle(fontSize: 40)),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text('Calculadora'),
+      ),
+      body: Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+        Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+          child: Text(
+            output,
+            style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(
-          flex: 3,
-          child: Container(
-              child: GridView.builder(
-                  itemCount: buttons.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == 0) {
-                      return showButton(buttons[index], Colors.green, Colors.white, unique: true);
-                    } else if (index == 1) {
-                      return showButton(buttons[index], Colors.red, Colors.white, unique: true);
-                    } else {
-                      return showButton(buttons[index], Colors.deepOrange, Colors.deepOrange);
-                    }
-                  })),
+        // Expanded(child: Divider()),
+        Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                buildButton('7'),
+                buildButton('8'),
+                buildButton('9'),
+                buildButton('/'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                buildButton('4'),
+                buildButton('5'),
+                buildButton('6'),
+                buildButton('x'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                buildButton('1'),
+                buildButton('2'),
+                buildButton('3'),
+                buildButton('-'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                buildButton('.'),
+                buildButton('0'),
+                buildButton(''),
+                buildButton('+'),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                buildButton('Clear'),
+                buildButton('='),
+              ],
+            ),
+          ],
         )
       ]),
     );
   }
 
-  bool isOperator(String x) {
-    if (x == '%' || x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') return true;
-    return false;
-  }
+  // bool isOperator(String x) {
+  //   if (x == '%' || x == '/' || x == 'x' || x == '-' || x == '+' || x == '=')
+  //     return true;
+  //   return false;
+  // }
 
-  Widget showButton(String buttonText, Color color, Color textColor,{bool unique = false}) {
-    return Buttons(
-      buttonText: buttonText,
-      color: 
-        unique
-          ? color
-          : isOperator(buttonText) 
-            ? color 
-            : Colors.deepOrange[50],
-      textColor:
-        unique 
-          ? textColor 
-          : isOperator(buttonText) 
-            ? Colors.white 
-            : textColor,
-    );
-  }
+  // Widget showButton(String buttonText, Color color, Color textColor,
+  //     {bool unique = false}) {
+  //   return Buttons(
+  //     buttonText: buttonText,
+  //     color: unique
+  //         ? color
+  //         : isOperator(buttonText) ? color : Colors.deepOrange[50],
+  //     textColor: unique
+  //         ? textColor
+  //         : isOperator(buttonText) ? Colors.white : textColor,
+  //   );
+  // }
+
 }
