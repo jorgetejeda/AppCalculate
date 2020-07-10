@@ -59,8 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void getOperation(String buttonText) {
     num1 = double.parse(output);
     operand = buttonText;
-    print(num1.toString() + operand);
-    _output = '0';
+    _output = "0";
+    output = "0";
   }
 
   void addingDecimal(String buttonText) {
@@ -75,21 +75,23 @@ class _MyHomePageState extends State<MyHomePage> {
   void addingNumber(String buttonText) {
     _output = _output + buttonText;
     setState(() {
-      output = double.parse(_output).toStringAsFixed(2);
+      output = double.parse(_output).toString();
     });
-    print('valor ' + output);
   }
 
   void result() {
+    print('second value ' + output);
     num2 = double.parse(output);
     if (operand == "+") _output = (num1 + num2).toString();
     if (operand == "-") _output = (num1 - num2).toString();
     if (operand == "x") _output = (num1 * num2).toString();
     if (operand == "/") _output = (num1 / num2).toString();
-
-    num1 = 0.0;
-    num2 = 0.0;
-    operand = "";
+    setState(() {
+      output = _output;
+      num1 = 0.0;
+      num2 = 0.0;
+      operand = "";
+    });
   }
 
   Widget buildButton(String text) {
